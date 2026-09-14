@@ -1,139 +1,75 @@
-# Deployment Guide — abdocooder.github.io
+# Deploy to your existing GitHub Pages repository
 
-Step-by-step instructions to deploy this portfolio to GitHub Pages under your personal domain.
+Repository: **https://github.com/AbdoCooder/abdocooder.github.io**
 
----
+This is a source ZIP delivery. It has not been pushed to GitHub or deployed over
+your existing portfolio.
 
-## Prerequisites
+## Preview
 
-- Git installed locally (`git --version` to verify)
-- A GitHub account with username **AbdoCooder**
-- The unzipped portfolio folder on your machine
+With Node.js 22.12+ installed, run in the unzipped project:
 
----
-
-## Step 1 — Create the GitHub Pages repository
-
-GitHub Pages serves your personal portfolio from a repository named exactly `<username>.github.io`.
-
-1. Go to [https://github.com/new](https://github.com/new)
-2. Set **Repository name** to: `AbdoCooder.github.io`
-3. Set visibility to **Public**
-4. Do **not** initialize with a README (leave all checkboxes unchecked)
-5. Click **Create repository**
-
----
-
-## Step 2 — Initialize and push the portfolio
-
-Open a terminal in the unzipped `portfolio/` folder and run:
-
-```bash
-# Initialize git
-git init
-
-# Add all files
-git add .
-
-# First commit
-git commit -m "feat: initial portfolio"
-
-# Set branch to main
-git branch -M main
-
-# Add the remote (replace AbdoCooder with your GitHub username if different)
-git remote add origin https://github.com/AbdoCooder/AbdoCooder.github.io.git
-
-# Push
-git push -u origin main
+```sh
+npm ci
+npm run dev
 ```
 
----
+## Update your existing checkout
 
-## Step 3 — Enable GitHub Pages
+1. Create a branch in your local repository, such as `redesign/react-portfolio`.
+2. Copy this project's contents into it, including `.github/`, `.gitignore`, and
+   `.env.example`. Preserve the checkout's `.git/` directory.
+3. Replace the old root `index.html`. The old `assets/css/style.css` and
+   `assets/js/script.js` are superseded by React and can be removed.
+4. Review and commit the changes. Push your branch, and merge into `main` when ready.
 
-1. Go to your repository: `https://github.com/AbdoCooder/AbdoCooder.github.io`
-2. Click **Settings** (top tab)
-3. In the left sidebar, click **Pages**
-4. Under **Source**, select:
-   - Branch: `main`
-   - Folder: `/ (root)`
-5. Click **Save**
+Do not commit `node_modules/`, `.env.local`, `dist/`, or test results. The included
+`.gitignore` excludes them. The workflow builds production files itself.
 
-GitHub will display a green banner:
+## Configure Pages
 
-> Your site is published at **https://abdocooder.github.io/**
+Before merging, go to repository **Settings → Pages → Source** and select
+**GitHub Actions**. The original branch/root method does not compile React source.
 
-It typically goes live within 1–3 minutes.
+The included workflow installs locked dependencies, type-checks, builds, runs
+browser tests, uploads `dist/`, and deploys it using the official Pages actions.
+Actions and Pages must be enabled for your repository. You can also start it
+manually from the Actions tab.
 
----
+After the workflow succeeds, open **https://abdocooder.github.io/**.
 
-## Step 4 — Verify
+## Activate contact delivery
 
-Visit [https://abdocooder.github.io](https://abdocooder.github.io) in your browser.
+Follow the four activation steps in README.md. The owner must confirm FormSubmit's
+email before normal delivery is active, then verify a real test message arrives.
 
-If the page doesn't appear immediately, wait 2 minutes and do a hard refresh (`Ctrl+Shift+R` / `Cmd+Shift+R`).
+To change the recipient identifier used by the workflow, create repository variable
+`VITE_FORMSUBMIT_RECIPIENT` in **Settings → Secrets and variables → Actions → Variables**.
+Re-run deployment to bake the new public value into the build.
 
----
+## Final verification
 
-## Updating the portfolio
+- Check the page on desktop and a real phone, in both themes.
+- Filter projects; open a case study; close with Escape; open its source link.
+- Enter an invalid email and check validation.
+- After activation, send one real message and verify it reaches your inbox.
+- Check GitHub, LinkedIn, Dev.to, telephone, and email links.
+- Confirm internship dates still reflect your availability.
 
-Whenever you make changes locally:
+## Other static hosts
 
-```bash
-git add .
-git commit -m "update: <describe your change>"
-git push
-```
-
-GitHub Actions will automatically redeploy. Changes are live within ~30 seconds.
-
----
-
-## Project Structure
-
-```
-portfolio/
-├── index.html              ← Main HTML (single page)
-├── DEPLOYMENT.md           ← This file
-└── assets/
-    ├── css/
-    │   └── style.css       ← All styles (design tokens, layout, components)
-    └── js/
-        └── script.js       ← Vanilla JS (nav, scroll reveal, banner)
-```
-
----
-
-## Optional: Custom Domain
-
-If you want to use a custom domain (e.g. `benajiba.dev`):
-
-1. Buy your domain from any registrar (Namecheap, Cloudflare, etc.)
-2. In your repo's **Settings → Pages**, enter your custom domain
-3. Create a file named `CNAME` in the repo root containing just your domain:
-   ```
-   benajiba.dev
-   ```
-4. At your DNS registrar, add a CNAME record:
-   - **Name:** `www`
-   - **Value:** `abdocooder.github.io`
-5. For the apex domain, add four A records pointing to GitHub's IPs:
-   ```
-   185.199.108.153
-   185.199.109.153
-   185.199.110.153
-   185.199.111.153
-   ```
-6. Enable **Enforce HTTPS** in GitHub Pages settings after DNS propagates (~24h)
-
----
-
-## Troubleshooting
+Run `npm run build` and upload the **contents of `dist/`**. Relative assets and
+hash-based case-study links avoid server-side route rewrites. If changing the
+public URL, update the canonical and social URLs in `index.html`, plus `robots.txt`
+and `sitemap.xml`.
 
 | Problem | Solution |
-|---|---|
-| 404 after pushing | Check the Pages source is set to `main` / `root` |
-| Fonts not loading | Ensure you have an internet connection; fonts load from Google Fonts CDN |
-| Styles not updating | Hard refresh: `Ctrl+Shift+R` or clear browser cache |
-| Push rejected | Run `git pull origin main --rebase` then push again |
+| --- | --- |
+| Blank page after source upload | Publish `dist/`, or use the included Actions workflow. |
+| File opened with `file://` fails | Use `npm run dev` or `npm run preview`. |
+| No contact email | Activate FormSubmit, check Spam and recipient, then send a fresh test. |
+| Service unavailable | Draft remains; retry or use the visible email link. |
+| Playwright browser missing | Run `npx playwright install chromium`. |
+| Restricted environment network interface error | Use `npm run dev -- --host 127.0.0.1`. |
+
+Reference: [GitHub custom Pages workflows](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
